@@ -22,15 +22,15 @@ public class DataBaseOperations {
      * @param plant
      * @param imageFileWithMetadata
      */
-    public void saveRecordsToDataBase(Plant plant, ImageFileWithMetadata imageFileWithMetadata) {
+    public void createRecordsToDataBase(Plant plant, ImageFileWithMetadata imageFileWithMetadata) {
         if (plant == null) {
             logger.info("Can't save plant = null! Image {}", imageFileWithMetadata);
         } else {
-            savePlant(plant);
+            createPlant(plant);
             if (imageFileWithMetadata != null && imageFileWithMetadata.getPathToPicture() != null) {
-                saveImage(imageFileWithMetadata);
+                createImage(imageFileWithMetadata);
             }
-            saveGeoPosition(plant, imageFileWithMetadata);
+            createGeoPosition(plant, imageFileWithMetadata);
         }
     }
 
@@ -40,7 +40,7 @@ public class DataBaseOperations {
      * @param plant
      * @param imageFileWithMetadata
      */
-    public void saveGeoPosition(Plant plant, ImageFileWithMetadata imageFileWithMetadata) {
+    public void createGeoPosition(Plant plant, ImageFileWithMetadata imageFileWithMetadata) {
 
         Geoposition geoposition = new Geoposition(imageFileWithMetadata.getLongitude(), imageFileWithMetadata.getLatitude(), plant);
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("geopositions");
@@ -67,7 +67,7 @@ public class DataBaseOperations {
      *
      * @param plant
      */
-    public void savePlant(Plant plant) {
+    public void createPlant(Plant plant) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("plants");
         EntityManager em = emf.createEntityManager();
 
@@ -86,7 +86,7 @@ public class DataBaseOperations {
      *
      * @param imageFileWithMetadata
      */
-    public void saveImage(ImageFileWithMetadata imageFileWithMetadata) {
+    public void createImage(ImageFileWithMetadata imageFileWithMetadata) {
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("pictures");
         EntityManager em = emf.createEntityManager();

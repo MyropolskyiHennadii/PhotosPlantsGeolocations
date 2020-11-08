@@ -79,14 +79,14 @@ public class MainDialogController {
     public CheckBox checkBoxShowMap_tab3;
     public WebView webView_tab3;
     public Button buttonRecordToDB_tab3;
-    public CheckBox checkBoxIsTree;
+    public ComboBox comboBoxKindOfPlant_tab3;
 
     /**
      * by selecting tab1
      */
     public void handleOnSelectionChanged_tab1() {
 
-       //text-fields with coordinates have to be double
+        //text-fields with coordinates have to be double
         UnaryOperator<TextFormatter.Change> filter = new UnaryOperator<TextFormatter.Change>() {
 
             @Override
@@ -252,8 +252,8 @@ public class MainDialogController {
                 return false;
             }
         }
-        if(textFieldMaxLongitude_tab1.getText().isEmpty() || textFieldMinLongitude_tab1.getText().isEmpty()
-        || textFieldMinLatitude_tab1.getText().isEmpty() || textFieldMaxLatitude_tab1.getText().isEmpty()){
+        if (textFieldMaxLongitude_tab1.getText().isEmpty() || textFieldMinLongitude_tab1.getText().isEmpty()
+                || textFieldMinLatitude_tab1.getText().isEmpty() || textFieldMaxLatitude_tab1.getText().isEmpty()) {
             labelMistake_tab1.setText("Coordinates can't be empty!");
             return false;
         }
@@ -325,11 +325,11 @@ public class MainDialogController {
     /**
      * try to open picture with windows Paint tab2
      */
-    public void handleMouthClickPicture_tab2(){
-        if(currentIndPhotoInList <= listPhotos.size()-1){
+    public void handleMouthClickPicture_tab2() {
+        if (currentIndPhotoInList <= listPhotos.size() - 1) {
             ImageFileWithMetadata image = listPhotos.get(currentIndPhotoInList);
             try {
-                Runtime.getRuntime().exec(new String[] { "C:\\WINDOWS\\system32\\mspaint.exe", image.getFile().getAbsolutePath()});
+                Runtime.getRuntime().exec(new String[]{"C:\\WINDOWS\\system32\\mspaint.exe", image.getFile().getAbsolutePath()});
             } catch (IOException e) {
                 logger.error("Can't open picture with windows Paint {}", image.getFile().getAbsolutePath());
             }
@@ -457,13 +457,17 @@ public class MainDialogController {
     public void handleOnSelectionChanged_tab3() {
 
         imageView_tab3.setImage(imageView_tab2.getImage());
-        checkBoxIsTree.setSelected(true);
         if (listPhotos.size() > 0 && currentPlant != null) {
             ImageFileWithMetadata imageFile = listPhotos.get(currentIndPhotoInList);
             labeImagePath_tab3.setText(imageFile.getFile().getAbsolutePath());
             labelImageGeo_tab3.setText("lat.: " + imageFile.getLatitude() + ", long.: " + imageFile.getLongitude());
             labePlant_tab3.setText(labelOrgan_tab2.getText() + "; " + currentPlant.getScientificName() + ". " + currentPlant.getCommonNames());
             hyperlinkWiki_tab3.setText(currentPlant.getWebReferenceWiki());
+        }
+        if (comboBoxKindOfPlant_tab3.getValue() == null) {
+            comboBoxKindOfPlant_tab3.setPromptText("Select kind of plant");
+            comboBoxKindOfPlant_tab3.getItems().addAll("Tree", "Bush", "Flower");
+            comboBoxKindOfPlant_tab3.getSelectionModel().selectFirst();
         }
         handleCheckBoxShowMap_tab3();
     }
@@ -515,9 +519,12 @@ public class MainDialogController {
                 imFile.setPathToPicture(endPath);
                 imFile.setPlant(currentPlant);
 
+                //kind of plant
+                currentPlant.setKindOfPlant(comboBoxKindOfPlant_tab3.getValue().toString());
+
                 //writing to database and refresh controller's fields
                 DataBaseOperations db_writer = new DataBaseOperations();
-                db_writer.saveRecordsToDataBase(currentPlant, imFile);
+                db_writer.createRecordsToDataBase(currentPlant, imFile);
 
                 currentPlant = null;
 
@@ -548,15 +555,6 @@ public class MainDialogController {
             } catch (URISyntaxException e) {
                 logger.error("URISyntaxException. Error by openning browser: {}", e.getMessage());
             }
-        }
-    }
-
-    /**
-     * handle check box IsTree tab3
-     */
-    public void handleCheckBoxIsTree_tab3() {
-        if (currentPlant != null) {
-            currentPlant.setTree(checkBoxIsTree.isSelected());
         }
     }
 }

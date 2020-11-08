@@ -14,7 +14,7 @@ public class Geoposition {
     @Column
     private double latitude;
     @Column
-    private boolean isTree;
+    private String kind;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_gbif")
@@ -23,7 +23,7 @@ public class Geoposition {
     public Geoposition(double longitude, double latitude, Plant plant) {
         this.longitude = longitude;
         this.latitude = latitude;
-        this.isTree = plant == null || plant.isTree();
+        this.kind = plant.getKindOfPlant();
         this.plant = plant;
     }
 
@@ -48,20 +48,20 @@ public class Geoposition {
         this.latitude = latitude;
     }
 
-    public boolean isTree() {
-        return isTree;
-    }
-
-    public void setTree(boolean tree) {
-        isTree = tree;
-    }
-
     public Plant getPlant() {
         return plant;
     }
 
     public void setPlant(Plant plant) {
         this.plant = plant;
+    }
+
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
     }
 
     @Override

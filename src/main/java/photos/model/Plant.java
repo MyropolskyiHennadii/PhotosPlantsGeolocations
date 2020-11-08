@@ -35,24 +35,24 @@ public class Plant {
     @Transient
     private double score;//by search
     @Transient
-    private boolean isTree = true;
+    private String kindOfPlant = "Tree";
 
-    public Plant(double score, String scientificNameAuthorship, String scientificName, String commonNames, String scientificNameFamily, boolean isTree, String id_gbif) {
+    public Plant(double score, String scientificNameAuthorship, String scientificName, String commonNames, String scientificNameFamily, String kindOfPlant, String id_gbif) {
         this.score = score;
         this.scientificNameAuthorship = scientificNameAuthorship;
         this.scientificName = scientificName;
         this.commonNames = commonNames;
         this.scientificNameFamily = scientificNameFamily;
-        this.isTree = isTree;
+        this.kindOfPlant = kindOfPlant;
         this.id_gbif = id_gbif;
     }
 
-    public Plant(String commonNames, String scientificNameFamily, String scientificNameAuthorship, String scientificName, boolean isTree, String id_gbif, String webReferenceWiki) {
+    public Plant(String commonNames, String scientificNameFamily, String scientificNameAuthorship, String scientificName, String kindOfPlant, String id_gbif, String webReferenceWiki) {
         this.commonNames = commonNames;
         this.scientificNameFamily = scientificNameFamily;
         this.scientificNameAuthorship = scientificNameAuthorship;
         this.scientificName = scientificName;
-        this.isTree = isTree;
+        this.kindOfPlant = kindOfPlant;
         this.id_gbif = id_gbif;
         this.webReferenceWiki = webReferenceWiki;
     }
@@ -116,12 +116,12 @@ public class Plant {
         this.id_gbif = id_gbif;
     }
 
-    public boolean isTree() {
-        return isTree;
+    public String getKindOfPlant() {
+        return kindOfPlant;
     }
 
-    public void setTree(boolean tree) {
-        isTree = tree;
+    public void setKindOfPlant(String kindOfPlant) {
+        this.kindOfPlant = kindOfPlant;
     }
 
     public Set<ImageFileWithMetadata> getImages() {

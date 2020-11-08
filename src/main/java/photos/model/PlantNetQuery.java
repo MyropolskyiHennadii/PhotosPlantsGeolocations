@@ -41,6 +41,7 @@ public class PlantNetQuery {
 
     /**
      * getting answer from PlantNet API
+     *
      * @param organ
      * @return
      */
@@ -82,7 +83,7 @@ public class PlantNetQuery {
         try {
             JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
             JSONArray results = (JSONArray) jsonObject.get("results");
-            if (jsonString.contains("error")){
+            if (jsonString.contains("error")) {
                 logger.error("Error: {}", jsonString);
             } else if (results == null || results.size() == 0) {
                 logger.error("There are no results in PlantNet!");
@@ -91,8 +92,22 @@ public class PlantNetQuery {
                     JSONObject jsonElement = (JSONObject) result;
                     double score = (double) jsonElement.get("score");
 
-                    JSONObject jsonGbif = (JSONObject) jsonElement.get("gbif");
-                    String id = (String) jsonGbif.get("id");
+                    JSONObject jsonGbif = null;
+                    try {
+                        jsonGbif = (JSONObject) jsonElement.get("gbif");
+                    } catch (NullPointerException e) {
+                        //don't know, how does it happen, but it happens
+                        logger.error("Undefinite plant-id gbif for jsonResult {}", jsonElement);
+                        continue;
+                    }
+                    String id = "";
+                    if (jsonGbif != null) {
+                        id = (String) jsonGbif.get("id");
+                    } else {
+                        //don't know, how does it happen, but it happens
+                        logger.error("Undefinite plant-id gbif for jsonResult {}", jsonElement);
+                        continue;
+                    }
 
                     JSONObject jsonSpecies = (JSONObject) jsonElement.get("species");
                     JSONArray commonNames = (JSONArray) jsonSpecies.get("commonNames");
@@ -102,7 +117,7 @@ public class PlantNetQuery {
                     JSONObject jsonFamily = (JSONObject) jsonSpecies.get("family");
                     String scientificNameFamily = (String) jsonFamily.get("scientificNameWithoutAuthor");
 
-                    Plant plant = new Plant(score, scientificNameAuthorship, scientificName, commonNames.toString(), scientificNameFamily, true, id);
+                    Plant plant = new Plant(score, scientificNameAuthorship, scientificName, commonNames.toString(), scientificNameFamily, "Tree", id);
                     plant.findAndSetWikiByName();
                     listPlant.add(plant);
                 }
