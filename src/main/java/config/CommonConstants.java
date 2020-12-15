@@ -14,12 +14,18 @@ public class CommonConstants {
     private double minLatitude = 48.1198;
     private double maxLatitude = 48.1273;
     private boolean checkLongLat = true;
+    //tolerable limit to check coordinate corresponds to 100000*(1,77meter = 0.000025 grad)
+    private double tolerableLimit = 5;
+
     //photo's directories
     private String inputDirectory = "";
     private String outputDirectory = "";
-    private String preparedPhotosDirectory = "D:\\PreparedPhotoesForPlantsDB";
-    //api PlantNet
+    //path to photos in react project public dir:
+    private String preparedPhotosDirectory = "";
+    //api PlantNet:
     private String apiKeyPlantNet = "";
+    //used synonyms in languages (except english):
+    private String[] languages = {"de", "ru", "uk"};
 
     private CommonConstants() {
     }
@@ -101,5 +107,21 @@ public class CommonConstants {
 
     public String getApiKeyPlantNet() {
         return apiKeyPlantNet;
+    }
+
+    public double getTolerableLimit() {
+        return tolerableLimit;
+    }
+
+    public void setTolerableLimit(double tolerableLimit) {
+        this.tolerableLimit = tolerableLimit;
+    }
+
+    public String[] getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(String[] languages) {
+        this.languages = languages;
     }
 }

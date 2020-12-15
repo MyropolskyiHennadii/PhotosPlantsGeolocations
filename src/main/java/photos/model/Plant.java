@@ -1,5 +1,6 @@
 package photos.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -19,45 +21,51 @@ public class Plant {
     @Id
     private String id_gbif;//id gbif
     @Column
-    private String commonNames;// array.toString()
+    private String common_names;// array.toString()
     @Column
-    private String scientificNameFamily;//
+    private String scientific_name_family;//
     @Column
-    private String scientificNameAuthorship;
+    private String scientific_name_authorship;
     @Column
-    private String scientificName;//Latin
+    private String scientific_name;//Latin
     @Column
-    private String webReferenceWiki;//
+    private String web_reference_wiki;//
+    @Column
+    private String kind = "Tree";
 
-    @OneToMany(targetEntity=ImageFileWithMetadata.class, mappedBy = "plant", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<ImageFileWithMetadata> images;// foreign key in database. One Plant = many Images
+    @OneToMany(targetEntity=ImageFileWithMetadata.class, mappedBy = "plant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference//!!! important to prevent infinite loop with json references
+    private Set<ImageFileWithMetadata> images = new HashSet<>();// foreign key in database. One Plant = many Images
+
+    @OneToMany(targetEntity=PlantsSynonym.class, mappedBy = "plant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference//!!! important to prevent infinite loop with json references
+    private Set<PlantsSynonym> synonyms = new HashSet<>();// foreign key in database. One Plant = many Images
 
     @Transient
     private double score;//by search
-    @Transient
-    private String kindOfPlant = "Tree";
 
-    public Plant(double score, String scientificNameAuthorship, String scientificName, String commonNames, String scientificNameFamily, String kindOfPlant, String id_gbif) {
+    public Plant(double score, String scientific_name_authorship, String scientific_name, String common_names, String scientific_name_family, String kind, String id_gbif) {
         this.score = score;
-        this.scientificNameAuthorship = scientificNameAuthorship;
-        this.scientificName = scientificName;
-        this.commonNames = commonNames;
-        this.scientificNameFamily = scientificNameFamily;
-        this.kindOfPlant = kindOfPlant;
+        this.scientific_name_authorship = scientific_name_authorship;
+        this.scientific_name = scientific_name;
+        this.common_names = common_names;
+        this.scientific_name_family = scientific_name_family;
+        this.kind = kind;
         this.id_gbif = id_gbif;
     }
 
-    public Plant(String commonNames, String scientificNameFamily, String scientificNameAuthorship, String scientificName, String kindOfPlant, String id_gbif, String webReferenceWiki) {
-        this.commonNames = commonNames;
-        this.scientificNameFamily = scientificNameFamily;
-        this.scientificNameAuthorship = scientificNameAuthorship;
-        this.scientificName = scientificName;
-        this.kindOfPlant = kindOfPlant;
+    public Plant(String common_names, String scientific_name_family, String scientific_name_authorship, String scientific_name, String kind, String id_gbif, String web_reference_wiki) {
+        this.common_names = common_names;
+        this.scientific_name_family = scientific_name_family;
+        this.scientific_name_authorship = scientific_name_authorship;
+        this.scientific_name = scientific_name;
+        this.kind = kind;
         this.id_gbif = id_gbif;
-        this.webReferenceWiki = webReferenceWiki;
+        this.web_reference_wiki = web_reference_wiki;
     }
 
     public Plant() {
+        this.kind = "Tree";
     }
 
     public double getScore() {
@@ -68,44 +76,44 @@ public class Plant {
         this.score = score;
     }
 
-    public String getScientificNameAuthorship() {
-        return scientificNameAuthorship;
+    public String getScientific_name_authorship() {
+        return scientific_name_authorship;
     }
 
-    public void setScientificNameAuthorship(String scientificNameAuthorship) {
-        this.scientificNameAuthorship = scientificNameAuthorship;
+    public void setScientific_name_authorship(String scientific_name_authorship) {
+        this.scientific_name_authorship = scientific_name_authorship;
     }
 
-    public String getScientificName() {
-        return scientificName;
+    public String getScientific_name() {
+        return scientific_name;
     }
 
-    public void setScientificName(String scientificName) {
-        this.scientificName = scientificName;
+    public void setScientific_name(String scientific_name) {
+        this.scientific_name = scientific_name;
     }
 
-    public String getCommonNames() {
-        return commonNames;
+    public String getCommon_names() {
+        return common_names;
     }
 
-    public void setCommonNames(String commonNames) {
-        this.commonNames = commonNames;
+    public void setCommon_names(String common_names) {
+        this.common_names = common_names;
     }
 
-    public String getScientificNameFamily() {
-        return scientificNameFamily;
+    public String getScientific_name_family() {
+        return scientific_name_family;
     }
 
-    public void setScientificNameFamily(String scientificNameFamily) {
-        this.scientificNameFamily = scientificNameFamily;
+    public void setScientific_name_family(String scientific_name_family) {
+        this.scientific_name_family = scientific_name_family;
     }
 
-    public String getWebReferenceWiki() {
-        return webReferenceWiki;
+    public String getWeb_reference_wiki() {
+        return web_reference_wiki;
     }
 
-    public void setWebReferenceWiki(String webReferenceWiki) {
-        this.webReferenceWiki = webReferenceWiki;
+    public void setWeb_reference_wiki(String web_reference_wiki) {
+        this.web_reference_wiki = web_reference_wiki;
     }
 
     public String getId_gbif() {
@@ -116,28 +124,36 @@ public class Plant {
         this.id_gbif = id_gbif;
     }
 
-    public String getKindOfPlant() {
-        return kindOfPlant;
+    public String getKind() {
+        return kind;
     }
 
-    public void setKindOfPlant(String kindOfPlant) {
-        this.kindOfPlant = kindOfPlant;
+    public void setKind(String kind) {
+        this.kind = kind;
     }
 
     public Set<ImageFileWithMetadata> getImages() {
         return images;
     }
 
+    public Set<PlantsSynonym> getSynonyms() {
+        return synonyms;
+    }
+
+    public void setSynonyms(Set<PlantsSynonym> synonyms) {
+        this.synonyms = synonyms;
+    }
+
     /**
      * find wiki-page by getScientificName and set it to field
      */
     public void findAndSetWikiByName() {
-        String name = getScientificName();
+        String name = getScientific_name();
         String refName = "https://en.wikipedia.org/wiki/" + name.replaceAll(" ", "_");
         try {
             URLConnection connection = new URL(refName).openConnection();
             connection.connect();
-            setWebReferenceWiki(refName);
+            setWeb_reference_wiki(refName);
         } catch (final MalformedURLException e) {
             logger.error("Can't find wiki-page for " + name + ". MalformedURLException!" + e.getMessage());
         } catch (final IOException e) {
@@ -147,7 +163,7 @@ public class Plant {
 
     @Override
     public String toString() {
-        return scientificName + ", nameAuthorship = " + scientificNameAuthorship + ". id_gbif = " + id_gbif;
+        return scientific_name + ", nameAuthorship = " + scientific_name_authorship + ". id_gbif = " + id_gbif;
     }
 
     @Override

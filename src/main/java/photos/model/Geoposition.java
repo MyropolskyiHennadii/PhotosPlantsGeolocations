@@ -9,21 +9,18 @@ public class Geoposition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column
     private double longitude;
     @Column
     private double latitude;
-    @Column
-    private String kind;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_gbif")
     private Plant plant;//foreign key in database
 
     public Geoposition(double longitude, double latitude, Plant plant) {
         this.longitude = longitude;
         this.latitude = latitude;
-        this.kind = plant.getKindOfPlant();
         this.plant = plant;
     }
 
@@ -56,12 +53,18 @@ public class Geoposition {
         this.plant = plant;
     }
 
-    public String getKind() {
-        return kind;
+    public long getId() {
+        return id;
     }
 
-    public void setKind(String kind) {
-        this.kind = kind;
+    @Override
+    public String toString() {
+        return "Geoposition{" +
+                "id=" + id +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", plant=" + plant +
+                '}';
     }
 
     @Override

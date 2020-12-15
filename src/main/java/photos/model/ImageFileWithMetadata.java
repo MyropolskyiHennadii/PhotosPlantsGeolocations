@@ -7,6 +7,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDescriptor;
 import com.drew.metadata.exif.GpsDirectory;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import config.GeoTransformations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +33,13 @@ public class ImageFileWithMetadata {
     @Column
     private String organ;
     @Column
-    private LocalDate photosDate;
+    private LocalDate photos_date;
     @Column
-    private String pathToPicture;//path to final directory (final pictures directory)
+    private String path_to_picture;//path to final directory (final pictures directory)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_gbif")
+    @JsonBackReference//important to prevent infinite loop of references
     private Plant plant;//foreign key in database
 
     @Transient
@@ -69,16 +71,32 @@ public class ImageFileWithMetadata {
         return metadata;
     }
 
-    public LocalDate getPhotosDate() {
-        return photosDate;
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+    }
+
+    public LocalDate getPhotos_date() {
+        return photos_date;
+    }
+
+    public void setPhotos_date(LocalDate photos_date) {
+        this.photos_date = photos_date;
     }
 
     public Double getLongitude() {
         return longitude;
     }
 
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
     public Double getLatitude() {
         return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
     public String getOrgan() {
@@ -93,6 +111,9 @@ public class ImageFileWithMetadata {
         return file;
     }
 
+    public void setFile(File file) {
+        this.file = file;
+    }
 
     public int getId() {
         return id;
@@ -102,32 +123,12 @@ public class ImageFileWithMetadata {
         this.id = id;
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    public String getPath_to_picture() {
+        return path_to_picture;
     }
 
-    public void setPhotosDate(LocalDate photosDate) {
-        this.photosDate = photosDate;
-    }
-
-    public void setMetadata(Metadata metadata) {
-        this.metadata = metadata;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getPathToPicture() {
-        return pathToPicture;
-    }
-
-    public void setPathToPicture(String pathToPicture) {
-        this.pathToPicture = pathToPicture;
+    public void setPath_to_picture(String path_to_picture) {
+        this.path_to_picture = path_to_picture;
     }
 
     /**
@@ -168,7 +169,7 @@ public class ImageFileWithMetadata {
             if (directory != null) {
                 Date date = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
                 if (date != null) {
-                    photosDate = date.toInstant()
+                    photos_date = date.toInstant()
                             .atZone(ZoneId.systemDefault())
                             .toLocalDate();
                 }
@@ -179,7 +180,7 @@ public class ImageFileWithMetadata {
     @Override
     public String toString() {
         return "Image {" + (file==null? "No File!!!": file.getName()) +
-                ", date = " + photosDate +
+                ", date = " + photos_date +
                 ", longitude = " + longitude +
                 ", latitude = " + latitude +
                 '}';
@@ -189,9 +190,17 @@ public class ImageFileWithMetadata {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if(getFile() == null) return false;
+        if(getPath_to_picture() == null || getPath_to_picture().isEmpty()) return false;
         ImageFileWithMetadata that = (ImageFileWithMetadata) o;
-        return getFile().getAbsolutePath().equals(that.getFile().getAbsolutePath());
+        if(getFile() != null && !getFile().getAbsolutePath().isEmpty()) {
+            if(that.getFile() != null){
+                return (getFile().getAbsolutePath().equals(that.getFile().getAbsolutePath()));
+            }
+            else{
+                return false;
+            }
+        }
+        return getPath_to_picture().equals(((ImageFileWithMetadata) o).getPath_to_picture());
     }
 
     @Override

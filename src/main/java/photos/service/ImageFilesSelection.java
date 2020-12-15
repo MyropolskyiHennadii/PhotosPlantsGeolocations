@@ -7,8 +7,6 @@ import java.io.File;
 
 public interface ImageFilesSelection {
 
-    boolean checkTags(ImageFileWithMetadata file);
-
     static ImageFileWithMetadata imageWithMetadata(File file) {
         ImageFileWithMetadata imageFile = null;
         try {
@@ -18,4 +16,6 @@ public interface ImageFilesSelection {
         }
         return imageFile;
     }
+
+    boolean checkTags(ImageFileWithMetadata file);
 }

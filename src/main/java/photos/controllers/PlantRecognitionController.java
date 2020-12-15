@@ -26,15 +26,13 @@ import java.util.List;
 public class PlantRecognitionController {
 
     private static Logger logger = LoggerFactory.getLogger(PlantRecognitionController.class);
-
-    private List<Plant> listPlants;//list of results from PlantNet API
-    private MainDialogController mainDialogController;// common field with MainDialogController
-
     public ImageView imageViewPlant;
     public Button buttonSelectAndClose;
     public Label labelInfo;
     public ListView<String> listViewResults;
     public Hyperlink hyperlinkWiki;
+    private List<Plant> listPlants;//list of results from PlantNet API
+    private ManageIncomingPhotosController mainDialogController;// common field with MainDialogController
 
     /**
      * initiation of controller
@@ -43,7 +41,7 @@ public class PlantRecognitionController {
      * @param plantNetQuery  exemplar of PlantNetQuery with results
      * @param mainController to return to main window selected result
      */
-    public void setInitialData(File file, PlantNetQuery plantNetQuery, MainDialogController mainController) {
+    public void setInitialData(File file, PlantNetQuery plantNetQuery, ManageIncomingPhotosController mainController) {
 
         mainDialogController = mainController;
 
@@ -66,7 +64,6 @@ public class PlantRecognitionController {
             listViewResults.setItems(items);
             listViewResults.getSelectionModel().selectFirst();
             if(items.size() > 0){
-                listViewResults.getSelectionModel().selectFirst();
                 handleListViewResults();
             }
         }
@@ -79,8 +76,8 @@ public class PlantRecognitionController {
     public void handleListViewResults() {
         int ind = listViewResults.getSelectionModel().getSelectedIndex();
         Plant selectedPlant = listPlants.get(ind);
-        labelInfo.setText("Score: " + selectedPlant.getScore() + ". " + selectedPlant.getCommonNames());
-        String wiki = selectedPlant.getWebReferenceWiki();
+        labelInfo.setText("Score: " + selectedPlant.getScore() + ". " + selectedPlant.getCommon_names());
+        String wiki = selectedPlant.getWeb_reference_wiki();
         if (wiki != null) {
             hyperlinkWiki.setText(wiki);
         } else {

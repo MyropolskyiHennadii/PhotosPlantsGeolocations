@@ -11,20 +11,20 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
-public class MaintenancePhotos extends Application {
+public class ManageIncomingPhotos extends Application {
 
-    private static Logger logger = LoggerFactory.getLogger(MaintenancePhotos.class);
+    private static Logger logger = LoggerFactory.getLogger(ManageIncomingPhotos.class);
 
     public static void main(String[] args) {
         logger.info("Start: ------------ {}", LocalDateTime.now());
-        Application.launch(MaintenancePhotos.class, args);
+        Application.launch(ManageIncomingPhotos.class, args);
         logger.info("Finish: ------------ {}", LocalDateTime.now());
     }
 
     @Override
     public void start(Stage stage) throws Exception {
 
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainDialog.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/MaintenancePhotoDialog.fxml"));
         CommonConstants.getInstance().setStage(stage);
 
         stage.setTitle("Welcome To Photo's Maintenance");

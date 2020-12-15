@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="photos.controllers.FindInDataBaseController">
+   <children>
+      <Label layoutX="27.0" layoutY="54.0" text="Enter name or part of plant's name" />
+      <Label layoutX="27.0" layoutY="24.0" text="Find records in DataBase by Filter" textFill="#191a1b">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Label>
+      <TextField id="textFieldName_tab1" fx:id="textFieldName_tab1" layoutX="239.0" layoutY="50.0" prefHeight="25.0" prefWidth="117.0" />
+      <Button id="buttonFind_tab1" fx:id="buttonFind_tab1" layoutX="367.0" layoutY="50.0" mnemonicParsing="false" onAction="#handleButtonFind_tab1" text="Find" />
+      <ListView id="listViewResults_tab1" fx:id="listViewResults_tab1" layoutX="27.0" layoutY="137.0" onMouseClicked="#handleListViewResults_tab1" prefHeight="172.0" prefWidth="381.0" />
+      <Hyperlink id="hyperlinkResult_tab1" fx:id="hyperlinkResult_tab1" layoutX="27.0" layoutY="317.0" onAction="#handleHyperlinkResult_tab1" prefHeight="23.0" prefWidth="381.0" />
+      <Button fx:id="buttonSelectAndClose_tab1" layoutX="27.0" layoutY="353.0" mnemonicParsing="false" onAction="#handleButtonSelectAndClose_tab1" text="Select and close" />
+      <Label id="labelInfo_tab1" fx:id="labelInfo_tab1" layoutX="27.0" layoutY="88.0" prefHeight="33.0" prefWidth="381.0" textFill="#1d26cd">
+         <font>
+            <Font name="System Italic" size="12.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

@@ -160,7 +160,7 @@ public class ImageFilesOperations implements ImageFilesSelection {
             }
 
             //filter for dates:
-            LocalDate fotosDate = imageFile.getPhotosDate();
+            LocalDate fotosDate = imageFile.getPhotos_date();
             if (dateFrom != null) {
                 if (fotosDate.isBefore(dateFrom)) {
                     continue;
@@ -184,7 +184,7 @@ public class ImageFilesOperations implements ImageFilesSelection {
      */
     public String copyFileToOutputDir(ImageFileWithMetadata imageFile, String outputDir) throws IOException {
 
-        LocalDate fotosDate = imageFile.getPhotosDate();
+        LocalDate fotosDate = imageFile.getPhotos_date();
         String month = "" + fotosDate.getMonthValue();
         String day = "" + fotosDate.getDayOfMonth();
         File file = imageFile.getFile();
@@ -194,8 +194,9 @@ public class ImageFilesOperations implements ImageFilesSelection {
             dirWasCreated = checkAndCreateMonthAndDayDirectories(outputDir + File.separator + month, day);
             if (dirWasCreated) {
                 endPath = outputDir + File.separator + month + File.separator + day + File.separator + file.getName();
-                Files.copy(file.toPath(), Paths.get(endPath), StandardCopyOption.REPLACE_EXISTING);
-                logger.info("Copying file: {}", fotosDate + ": " + file.getName() + "; geo long: " + imageFile.getLongitude() + " geo lat: " + imageFile.getLatitude());
+                Files.move(file.toPath(), Paths.get(endPath), StandardCopyOption.REPLACE_EXISTING);
+                //Files.copy(file.toPath(), Paths.get(endPath), StandardCopyOption.REPLACE_EXISTING);
+                logger.info("Moving file: {}", fotosDate + ": " + file.getName() + "; geo long: " + imageFile.getLongitude() + " geo lat: " + imageFile.getLatitude());
             }
         }
         return endPath;
@@ -211,7 +212,7 @@ public class ImageFilesOperations implements ImageFilesSelection {
         if (file.getLatitude() == null || file.getLongitude() == null) {
             return false;
         }
-        if (file.getPhotosDate() == null) {
+        if (file.getPhotos_date() == null) {
             return false;
         }
         return ok;

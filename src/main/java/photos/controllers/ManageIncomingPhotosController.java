@@ -30,18 +30,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-public class MainDialogController {
+public class ManageIncomingPhotosController {
 
-    private static Logger logger = LoggerFactory.getLogger(MainDialogController.class);
+    private static Logger logger = LoggerFactory.getLogger(ManageIncomingPhotosController.class);
     private static List<ImageFileWithMetadata> listPhotos = new ArrayList<>();//list with image's files
     private static int currentIndPhotoInList = 0;//current index photo in list
-
-    private Plant currentPlant;
-
     //tab 1
     public DatePicker dateFrom_tab1;
     public DatePicker dateTo_tab1;
@@ -55,7 +54,6 @@ public class MainDialogController {
     public TextField textFieldMaxLongitude_tab1;
     public TextField textFieldMinLatitude_tab1;
     public TextField textFieldMaxLatitude_tab1;
-
     //tab 2
     public TextField photosDirectory_tab2;
     public Button buttonPhotosDirectory_tab2;
@@ -69,7 +67,6 @@ public class MainDialogController {
     public ChoiceBox choiseBoxOrgan_tab2;
     public Button buttonSendQueryToPlantNet_tab2;
     public Label labelAnswerFromPlantNet_tab2;
-
     //tab3
     public ImageView imageView_tab3;
     public Label labeImagePath_tab3;
@@ -80,6 +77,8 @@ public class MainDialogController {
     public WebView webView_tab3;
     public Button buttonRecordToDB_tab3;
     public ComboBox comboBoxKindOfPlant_tab3;
+    private Plant currentPlant;
+    private DataBaseOperations dataBaseOperations = DataBaseOperations.getInstance();
 
     /**
      * by selecting tab1
@@ -162,10 +161,12 @@ public class MainDialogController {
      * @throws ImageProcessingException
      */
     public void handleMaintainFiles_tab1() throws IOException, ImageProcessingException {
+
         if (checkData_tab1()) {
+            labelMistake_tab1.setText("");
             searchAndCopyFiles();
+            refreshListPhotoAndViewImage_tab2(photosDirectory_tab2.getText(), checkBoxIncludeSubdirectories_tab2.isSelected());
         }
-        refreshListPhotoAndViewImage_tab2(photosDirectory_tab2.getText(), checkBoxIncludeSubdirectories_tab2.isSelected());
     }
 
     /**
@@ -179,6 +180,10 @@ public class MainDialogController {
         switch (operation) {
             case "input":
                 directoryChooser.setTitle("Choose Input Directory");
+                if(!inputDirectory_tab1.getText().isEmpty()){
+                    File defaultDirectory = new File(inputDirectory_tab1.getText());
+                    directoryChooser.setInitialDirectory(defaultDirectory);
+                }
                 selectedDirectory = directoryChooser.showDialog(CommonConstants.getInstance().getStage());
                 if (selectedDirectory != null) {
                     inputDirectory_tab1.setText(selectedDirectory.getAbsolutePath());
@@ -187,6 +192,10 @@ public class MainDialogController {
                 break;
             case "output":
                 directoryChooser.setTitle("Choose Output Directory");
+                if(!outputDirectory_tab1.getText().isEmpty()){
+                    File defaultDirectory = new File(outputDirectory_tab1.getText());
+                    directoryChooser.setInitialDirectory(defaultDirectory);
+                }
                 selectedDirectory = directoryChooser.showDialog(CommonConstants.getInstance().getStage());
                 if (selectedDirectory != null) {
                     outputDirectory_tab1.setText(selectedDirectory.getAbsolutePath());
@@ -196,6 +205,10 @@ public class MainDialogController {
                 break;
             case "photos":
                 directoryChooser.setTitle("Choose Photo's Directory");
+                if(!photosDirectory_tab2.getText().isEmpty()){
+                    File defaultDirectory = new File(photosDirectory_tab2.getText());
+                    directoryChooser.setInitialDirectory(defaultDirectory);
+                }
                 selectedDirectory = directoryChooser.showDialog(CommonConstants.getInstance().getStage());
                 if (selectedDirectory != null) {
                     photosDirectory_tab2.setText(selectedDirectory.getAbsolutePath());
@@ -405,7 +418,7 @@ public class MainDialogController {
     public void setLabelAnswerFromPlantNet_tab2(Plant plant) {
         currentPlant = plant;
         if (currentPlant != null) {
-            String wiki = currentPlant.getWebReferenceWiki();
+            String wiki = currentPlant.getWeb_reference_wiki();
             labelAnswerFromPlantNet_tab2.setText(currentPlant.toString() + "\n" + wiki);
         } else {
             labelAnswerFromPlantNet_tab2.setText("");
@@ -461,8 +474,8 @@ public class MainDialogController {
             ImageFileWithMetadata imageFile = listPhotos.get(currentIndPhotoInList);
             labeImagePath_tab3.setText(imageFile.getFile().getAbsolutePath());
             labelImageGeo_tab3.setText("lat.: " + imageFile.getLatitude() + ", long.: " + imageFile.getLongitude());
-            labePlant_tab3.setText(labelOrgan_tab2.getText() + "; " + currentPlant.getScientificName() + ". " + currentPlant.getCommonNames());
-            hyperlinkWiki_tab3.setText(currentPlant.getWebReferenceWiki());
+            labePlant_tab3.setText(choiseBoxOrgan_tab2.getValue().toString() + "; " + currentPlant.getScientific_name() + ". " + currentPlant.getCommon_names());
+            hyperlinkWiki_tab3.setText(currentPlant.getWeb_reference_wiki());
         }
         if (comboBoxKindOfPlant_tab3.getValue() == null) {
             comboBoxKindOfPlant_tab3.setPromptText("Select kind of plant");
@@ -495,9 +508,11 @@ public class MainDialogController {
     }
 
     /**
-     * reocord to database tab3
+     * record to database tab3
      */
     public void handleButtonRecordToDB_tab3() {
+
+        Path pathToPictures = Paths.get(CommonConstants.getInstance().getPreparedPhotosDirectory());
 
         ImageFileWithMetadata imFile = null;
         if (currentIndPhotoInList >= 0 && currentIndPhotoInList < listPhotos.size()) {
@@ -509,22 +524,34 @@ public class MainDialogController {
             } else {
                 imFile.setOrgan(choiseBoxOrgan_tab2.getValue().toString());
 
-                //copy file to pictures final directory
-                String endPath = null;
-                try { //set field to imFile
-                    endPath = new ImageFilesOperations().copyFileToOutputDir(imFile, CommonConstants.getInstance().getPreparedPhotosDirectory());
-                } catch (IOException e) {
-                    logger.error("Can't copy file to prepared photo's directory! {}", e.getMessage());
+                //if photo has no date or coordinates - simple save only Plant
+                boolean saveOnlyPlant = true;
+                if (imFile.getPhotos_date() != null && imFile.getLongitude() > 0 && imFile.getLatitude() > 0) {
+                    saveOnlyPlant = false;
                 }
-                imFile.setPathToPicture(endPath);
+
+                //copy file to pictures final directory and set relative path
+                if (!saveOnlyPlant) {
+                    String endPath = null;
+                    try { //set field to imFile
+                        endPath = new ImageFilesOperations().copyFileToOutputDir(imFile, CommonConstants.getInstance().getPreparedPhotosDirectory());
+                    } catch (IOException e) {
+                        logger.error("Can't copy file to prepared photo's directory! {}", e.getMessage());
+                    }
+
+                    imFile.setPath_to_picture(pathToPictures.relativize(Paths.get(endPath)).toString().replaceAll("\\\\", "/"));
+                }
                 imFile.setPlant(currentPlant);
 
                 //kind of plant
-                currentPlant.setKindOfPlant(comboBoxKindOfPlant_tab3.getValue().toString());
+                currentPlant.setKind(comboBoxKindOfPlant_tab3.getValue().toString());
 
                 //writing to database and refresh controller's fields
-                DataBaseOperations db_writer = new DataBaseOperations();
-                db_writer.createRecordsToDataBase(currentPlant, imFile);
+                if (!saveOnlyPlant) {//all records
+                    dataBaseOperations.createAllRecordsToDataBase(currentPlant, imFile);
+                } else {//only plant
+                    dataBaseOperations.createPlant(currentPlant);
+                }
 
                 currentPlant = null;
 
@@ -541,6 +568,7 @@ public class MainDialogController {
         }
 
         clearMessages();
+        labePlant_tab3.setText("Done");
     }
 
     /**

@@ -69,6 +69,20 @@
             <version>1.1.1</version>
         </dependency>
 
+        <!--        html-->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.13.1</version>
+        </dependency>
+
+        <!--to prevent infinite loop with json many-to-one-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.12.0-rc1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
