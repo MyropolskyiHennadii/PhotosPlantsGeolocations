@@ -20,8 +20,8 @@
                                     </font>
                                 </Label>
                                 <Label layoutX="14.0" layoutY="42.0" text="Plant ID" />
-                                <TextField id="plantID_tab4" fx:id="textFieldPlantID_tab1" layoutX="72.0" layoutY="38.0" prefHeight="25.0" prefWidth="73.0" />
-                                <Button id="buttonFindPlantID_tab4" fx:id="buttonFindPlantID_tab1" layoutX="151.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleButtonFindPlantID_tab1" text="Find by ID" />
+                                <TextField id="plantID_tab1" fx:id="textFieldPlantID_tab1" layoutX="72.0" layoutY="38.0" prefHeight="25.0" prefWidth="73.0" />
+                                <Button id="buttonFindPlantID_tab1" fx:id="buttonFindPlantID_tab1" layoutX="151.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleButtonFindPlantID_tab1" text="Find by ID" />
                                 <Label id="labelCurrentPlant_tab1" fx:id="labelCurrentPlant_tab1" layoutX="307.0" layoutY="39.0" prefHeight="24.0" prefWidth="264.0" textFill="#5233d0">
                                     <font>
                                         <Font name="System Italic" size="12.0" />
@@ -32,12 +32,12 @@
                                 <TextField id="textFieldPhotosDirectory_tab4" fx:id="textFieldPhotosDirectory_tab1" layoutX="233.0" layoutY="81.0" prefHeight="25.0" prefWidth="309.0" />
                                 <Button id="buttonInputDirectory_tab4" fx:id="buttonInputDirectory_tab1" layoutX="542.0" layoutY="81.0" mnemonicParsing="false" onAction="#handleButtonInputDirectory_tab1" text="..." />
                                 <Separator layoutX="14.0" layoutY="116.0" prefHeight="0.0" prefWidth="551.0" />
-                                <ImageView id="imageView_tab4" fx:id="imageView_tab1" fitHeight="199.0" fitWidth="210.0" layoutX="14.0" layoutY="131.0" onMouseClicked="#handleMouthClickPicture_tab2" pickOnBounds="true" preserveRatio="true" />
-                                <Button id="buttonPreviuos_tab4" fx:id="buttonPrevious_tab1" layoutX="20.0" layoutY="339.0" mnemonicParsing="false" onAction="#handleSchiftPicturePrev_tab1" text="&lt; Previuos" />
-                                <Button id="buttonNext_tab4" fx:id="buttonNext_tab1" layoutX="168.0" layoutY="339.0" mnemonicParsing="false" onAction="#handleSchiftPictureNext_tab1" text="Next &gt;" />
-                                <Label id="labelImageInfo_tab4" fx:id="labelImageInfo_tab1" layoutX="232.0" layoutY="123.0" prefHeight="23.0" prefWidth="329.0" textFill="#4131d7" />
+                                <ImageView id="imageView_tab1" fx:id="imageView_tab1" fitHeight="199.0" fitWidth="210.0" layoutX="14.0" layoutY="131.0" onMouseClicked="#handleMouthClickPicture_tab2" pickOnBounds="true" preserveRatio="true" />
+                                <Button id="buttonPreviuos_tab1" fx:id="buttonPrevious_tab1" layoutX="20.0" layoutY="339.0" mnemonicParsing="false" onAction="#handleSchiftPicturePrev_tab1" text="&lt; Previuos" />
+                                <Button id="buttonNext_tab1" fx:id="buttonNext_tab1" layoutX="168.0" layoutY="339.0" mnemonicParsing="false" onAction="#handleSchiftPictureNext_tab1" text="Next &gt;" />
+                                <Label id="labelImageInfo_tab1" fx:id="labelImageInfo_tab1" layoutX="232.0" layoutY="123.0" prefHeight="23.0" prefWidth="329.0" textFill="#4131d7" />
                                 <Button id="buttonRecordToDatabase_tab4" fx:id="buttonRecordToDatabase_tab1" layoutX="233.0" layoutY="153.0" mnemonicParsing="false" onAction="#handleButtonRecordToDatabase_tab1" text="Record to the database" />
-                                <Label id="labelMistake_tab4" fx:id="labelMistake_tab1" layoutX="237.0" layoutY="224.0" prefHeight="27.0" prefWidth="322.0" textFill="#792eda">
+                                <Label id="labelMistake_tab1" fx:id="labelMistake_tab1" layoutX="237.0" layoutY="224.0" prefHeight="27.0" prefWidth="322.0" textFill="#792eda">
                                     <font>
                                         <Font name="System Italic" size="12.0" />
                                     </font>
@@ -47,7 +47,7 @@
                                 <Separator layoutX="233.0" layoutY="250.0" prefHeight="4.0" prefWidth="325.0" />
                                 <ListView id="listView_tab1" fx:id="listView_tab1" layoutX="232.0" layoutY="276.0" onMouseClicked="#handleListView_tab1" prefHeight="91.0" prefWidth="329.0" />
                                 <Label layoutX="232.0" layoutY="254.0" text="Click on list-view to replace record in DB" />
-                                <Button id="buttonFindInDataBase_tab1" fx:id="buttonFindInDataBase" layoutX="232.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleFindInDataBase_tab1" text="Find in DB" />
+                                <Button id="buttonFindInDataBase_tab1" fx:id="buttonFindInDataBase_tab1" layoutX="232.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleFindInDataBase_tab1" text="Find in DB" />
                             </children>
                         </AnchorPane>
                     </content>
@@ -82,17 +82,44 @@
                     </content>
                 </Tab>
 
-                <Tab id="tab3" fx:id="tab2" onSelectionChanged="#handleOnSelectionChanged_tab3" text="Plant's names and wiki">
+                <Tab id="tab3" fx:id="tab3" onSelectionChanged="#handleOnSelectionChanged_tab3" text="Plant's names, events and so on">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button id="buttonRefreshAllLanguages_tab3" fx:id="buttonRefreshAllLanguages_tab3" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleButtonRefreshAllLanguages_tab3" text="Refresh all references in the table plants_names_languages" />
-                        <Label id="labelInfoRefreshSynonyms_tab3" fx:id="labelInfoRefreshSynonyms_tab3" layoutX="12.0" layoutY="50.0" prefHeight="22.0" prefWidth="330.0">
+                         <Label layoutX="14.0" layoutY="42.0" text="Plant ID" />
+                         <TextField id="plantID_tab3" fx:id="textFieldPlantID_tab3" layoutX="79.0" layoutY="38.0" prefHeight="25.0" prefWidth="66.0" />
+                         <Button id="buttonFindPlantID_tab3" fx:id="buttonFindPlantID_tab3" layoutX="151.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleButtonFindPlantID_tab3" text="Find by ID" />
+                         <Label id="labelCurrentPlant_tab3" fx:id="labelCurrentPlant_tab3" layoutX="307.0" layoutY="39.0" prefHeight="24.0" prefWidth="264.0" textFill="#5233d0">
+                             <font>
+                                 <Font name="System Italic" size="12.0" />
+                             </font>
+                         </Label>
+                         <Button id="buttonFindInDataBase_tab3" fx:id="buttonFindInDataBase_tab3" layoutX="232.0" layoutY="38.0" mnemonicParsing="false" onAction="#handleFindInDataBase_tab3" text="Find in DB" />
+                        <Button id="buttonRefreshAllLanguages_tab3" fx:id="buttonRefreshAllLanguages_tab3" layoutX="14.0" layoutY="189.0" mnemonicParsing="false" onAction="#handleButtonRefreshAllLanguages_tab3" text="Refresh all references in the table plants_names_languages" />
+                        <Label id="labelInfoRefreshSynonyms_tab3" fx:id="labelInfoRefreshSynonyms_tab3" layoutX="12.0" layoutY="215.0" prefHeight="22.0" prefWidth="330.0">
                            <font>
                               <Font name="System Bold Italic" size="12.0" />
                            </font>
                         </Label>
-                        <Button id="buttonCheckPhotos_tab3" fx:id="buttonCheckPhotos_tab3" layoutX="14.0" layoutY="94.0" mnemonicParsing="false" onAction="#handleButtonCheckPhotos_tab3" prefHeight="25.0" prefWidth="327.0" text="Check all photos" />
+                        <Label layoutX="14.0" layoutY="14.0" text="Register event for plant">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="16.0" layoutY="172.0" text="Refresh wiki and synonyms">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="14.0" layoutY="72.0" text="From date" />
+                        <TextField id="textFieldFromDate_tab3" fx:id="textFieldFromDate_tab3" layoutX="81.0" layoutY="68.0" prefHeight="25.0" prefWidth="63.0" />
+                        <Label layoutX="153.0" layoutY="72.0" text="From month" />
+                        <TextField id="textFieldFromMonth_tab3" fx:id="textFieldFromMonth_tab3" layoutX="232.0" layoutY="68.0" prefHeight="25.0" prefWidth="63.0" />
+                        <Label layoutX="13.0" layoutY="104.0" text="To date" />
+                        <TextField id="textFieldToDate_tab3" fx:id="textFieldToDate_tab3" layoutX="80.0" layoutY="100.0" prefHeight="25.0" prefWidth="63.0" />
+                        <Label layoutX="152.0" layoutY="104.0" text="To month" />
+                        <TextField id="textFieldToMonth_tab3" fx:id="textFieldToMonth_tab3" layoutX="231.0" layoutY="100.0" prefHeight="25.0" prefWidth="63.0" />
+                        <Button id="buttonWriteEventToDB_tab3" fx:id="buttonWriteEventToDB_tab3" layoutX="16.0" layoutY="137.0" mnemonicParsing="false" onAction="#handleButtonWriteEventToDB_tab3" text="Write flowering to the database" />
                      </children>
                         </AnchorPane>
                     </content>

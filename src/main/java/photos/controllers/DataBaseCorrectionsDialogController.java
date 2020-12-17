@@ -51,8 +51,9 @@ public class DataBaseCorrectionsDialogController {
     public Label labelMistake_tab1;
     public Button buttonDeleteFile_tab1;
     public ListView listView_tab1;
-    public Button buttonFindInDataBase;
+    public Button buttonFindInDataBase_tab1;
 
+    //tab2
     public WebView webView_tab2;
     public TextField textFieldSchiftLatitude_tab2;
     public TextField textFieldSchiftLongitude_tab2;
@@ -64,11 +65,21 @@ public class DataBaseCorrectionsDialogController {
     public Button buttonUpdateGeopositionInDB_tab2;
     public Label labelInfo_tab2;
 
+    //tab3
+    public Button buttonFindPlantID_tab3;
+    public TextField textFieldPlantID_tab3;
+    public Label labelCurrentPlant_tab3;
+    public Button buttonFindInDataBase_tab3;
+    public TextField textFieldFromDate_tab3;
+    public TextField textFieldFromMonth_tab3;
+    public TextField textFieldToDate_tab3;
+    public TextField textFieldToMonth_tab3;
+    public Button buttonWriteEventToDB_tab3;
     public Button buttonRefreshAllLanguages_tab3;
     public Label labelInfoRefreshSynonyms_tab3;
-    public Button buttonCheckPhotos_tab3;
 
-    private Plant currentPlantSample;
+    private Plant currentPlantSample_tab1;
+    private Plant currentPlantSample_tab3;
     private DataBaseOperations dataBaseOperations = DataBaseOperations.getInstance();
     //for nearest plants (we do need, if there is mistake in recognition
     //and we want to replace record in database with correct one
@@ -125,7 +136,7 @@ public class DataBaseCorrectionsDialogController {
         } else {
             imageView_tab1.setImage(null);
             labelImageInfo_tab1.setText("");
-            currentPlantSample = null;
+            currentPlantSample_tab1 = null;
             currentIndPhotoInListSample = 0;
             refreshListView_tab1(null);
         }
@@ -167,8 +178,8 @@ public class DataBaseCorrectionsDialogController {
                     if (listPlant.size() > 1) {
                         logger.error("For plantID {} there are more then one record in the database!", PlantID);
                     }
-                    currentPlantSample = listPlant.get(0);
-                    labelCurrentPlant_tab1.setText(currentPlantSample.toString());
+                    currentPlantSample_tab1 = listPlant.get(0);
+                    labelCurrentPlant_tab1.setText(currentPlantSample_tab1.toString());
                 }
             }
         }
@@ -225,15 +236,15 @@ public class DataBaseCorrectionsDialogController {
     }
 
     /**
-     * record to the database tab4
+     * record to the database tab1
      */
     public void handleButtonRecordToDatabase_tab1() {
-        if (currentPlantSample != null && listPhotosSample.size() > 0) {
+        if (currentPlantSample_tab1 != null && listPhotosSample.size() > 0) {
             ImageFileWithMetadata imFile = listPhotosSample.get(currentIndPhotoInListSample);
             if (imFile != null) {
                 if (imFile.getLatitude() > 0 || imFile.getLongitude() > 0) {
                     //writing to database and refresh controller's fields
-                    dataBaseOperations.createGeoPosition(currentPlantSample, imFile);
+                    dataBaseOperations.createGeoPosition(currentPlantSample_tab1, imFile);
                     //deleting file
                     handleButtonDeleteFile_tab1();
                 }
@@ -249,7 +260,7 @@ public class DataBaseCorrectionsDialogController {
      * all records to database
      */
     public void handleButtonRecordAll_tab1() {
-        if (currentPlantSample != null && listPhotosSample.size() > 0) {
+        if (currentPlantSample_tab1 != null && listPhotosSample.size() > 0) {
             for (int i = 0; i < listPhotosSample.size(); i++) {
                 currentIndPhotoInListSample = i;
                 handleButtonRecordToDatabase_tab1();
@@ -266,7 +277,7 @@ public class DataBaseCorrectionsDialogController {
      * by click on list view - replace record in DB with current plant
      */
     public void handleListView_tab1() {
-        if (currentPlantSample != null && listPhotosSample.size() > 0) {
+        if (currentPlantSample_tab1 != null && listPhotosSample.size() > 0) {
             //ask and update
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Update record in the database");
@@ -276,7 +287,7 @@ public class DataBaseCorrectionsDialogController {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK) {
                 // ... user chose OK
-                dataBaseOperations.updateGeopositionWithCorrectPlant(nearestGeopositions.get(listView_tab1.getSelectionModel().getSelectedIndex()), currentPlantSample);
+                dataBaseOperations.updateGeopositionWithCorrectPlant(nearestGeopositions.get(listView_tab1.getSelectionModel().getSelectedIndex()), currentPlantSample_tab1);
                 handleButtonDeleteFile_tab1();
             }
         }
@@ -309,15 +320,18 @@ public class DataBaseCorrectionsDialogController {
     }
 
     /**
-     * handle selected Plant from FindInDaraBase
+     * handle selected Plant from FindInDataBase
      *
      * @param plant
      */
     public void setPlantFromDB_tab1(Plant plant) {
-        currentPlantSample = plant;
+        currentPlantSample_tab1 = plant;
+        currentPlantSample_tab3 = plant;
         if (plant != null) {
             textFieldPlantID_tab1.setText(plant.getId_gbif());
             labelCurrentPlant_tab1.setText(plant.toString());
+            textFieldPlantID_tab3.setText(plant.getId_gbif());
+            labelCurrentPlant_tab3.setText(plant.toString());
         }
     }
 
@@ -507,7 +521,98 @@ public class DataBaseCorrectionsDialogController {
      * by selecting tab3
      */
     public void handleOnSelectionChanged_tab3() {
+
+        textFieldFromDate_tab3.setText("1");
+        textFieldFromMonth_tab3.setText("1");
+        textFieldToDate_tab3.setText("1");
+        textFieldToMonth_tab3.setText("1");
+
+        //text-fields with coordinates have to be double
+        UnaryOperator<TextFormatter.Change> filter = new UnaryOperator<TextFormatter.Change>() {
+
+            @Override
+            public TextFormatter.Change apply(TextFormatter.Change t) {
+
+                if (t.isReplaced())
+                    if (t.getText().matches("[^1-9]"))
+                        t.setText(t.getControlText().substring(t.getRangeStart(), t.getRangeEnd()));
+
+
+                if (t.isAdded()) {
+                    String wholeText = t.getControlText();
+                    if (wholeText.startsWith("-")) {//allow minus at start position
+                        if (wholeText.contains(".")) {
+                            if (t.getText().matches("[^0-9]")) {
+                                t.setText("");
+                            }
+                        } else if (t.getText().matches("[^0-9.]")) {
+                            t.setText("");
+                        }
+                    } else {
+                        if (wholeText.contains(".")) {
+                            if (t.getText().matches("[^0-9-]")) {
+                                t.setText("");
+                            }
+                        } else if (t.getText().matches("[^0-9.-]")) {
+                            t.setText("");
+                        }
+                    }
+                }
+                return t;
+            }
+        };
+
+        textFieldFromDate_tab3.setTextFormatter(new TextFormatter<>(filter));
+        textFieldFromMonth_tab3.setTextFormatter(new TextFormatter<>(filter));
+        textFieldToDate_tab3.setTextFormatter(new TextFormatter<>(filter));
+        textFieldToMonth_tab3.setTextFormatter(new TextFormatter<>(filter));
+
         labelInfoRefreshSynonyms_tab3.setText("");
+    }
+
+    /**
+     * find in database by name and so on
+     */
+    public void handleFindInDataBase_tab3() {
+        handleFindInDataBase_tab1();
+    }
+
+    /**
+     * find in database plant by ID tab3
+     */
+    public void handleButtonFindPlantID_tab3() {
+
+        if (textFieldPlantID_tab3.getText().isEmpty()) {
+            labelCurrentPlant_tab3.setText("You have to define not empty ID!");
+        } else {
+            String PlantID = textFieldPlantID_tab3.getText().trim();
+            List<Plant> listPlant = dataBaseOperations.findPlantById_gbif(PlantID);
+            if (listPlant == null) {
+                labelCurrentPlant_tab3.setText("NULL-answer from the database!");
+            } else {
+                if (listPlant.size() == 0) {
+                    labelCurrentPlant_tab3.setText("There no such records in the database!");
+                } else {
+                    if (listPlant.size() > 1) {
+                        logger.error("For plantID {} there are more then one record in the database!", PlantID);
+                    }
+                    currentPlantSample_tab3 = listPlant.get(0);
+                    labelCurrentPlant_tab3.setText(currentPlantSample_tab3.toString());
+                }
+            }
+        }
+    }
+
+    /**
+     * register event to DB (now - only flowering)
+     */
+    public void handleButtonWriteEventToDB_tab3() {
+        if (currentPlantSample_tab3 != null) {
+            dataBaseOperations.wtitePlantsEvent(currentPlantSample_tab3, "flowering", Integer.parseInt(textFieldFromDate_tab3.getText()), Integer.parseInt(textFieldFromMonth_tab3.getText()), Integer.parseInt(textFieldToDate_tab3.getText()), Integer.parseInt(textFieldToMonth_tab3.getText()));
+            labelInfoRefreshSynonyms_tab3.setText("Done");
+        } else {
+            labelInfoRefreshSynonyms_tab3.setText("Undefined currentPlantSample_tab3");
+        }
     }
 
     /**
@@ -521,16 +626,4 @@ public class DataBaseCorrectionsDialogController {
         labelInfoRefreshSynonyms_tab3.setText("Done");
     }
 
-    /**
-     * check photos: existing files and so on
-     */
-    public void handleButtonCheckPhotos_tab3() {
-        List<ImageFileWithMetadata> imFiles = dataBaseOperations.findAllImages();
-        for (ImageFileWithMetadata imFile : imFiles) {
-            File file = new File(imFile.getPath_to_picture());
-            if (!file.exists()) {
-                logger.error("Attention!!! File doesn't exist, id = " + imFile.getId());
-            }
-        }
-    }
 }

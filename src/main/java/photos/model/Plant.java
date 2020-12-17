@@ -39,7 +39,11 @@ public class Plant {
 
     @OneToMany(targetEntity=PlantsSynonym.class, mappedBy = "plant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference//!!! important to prevent infinite loop with json references
-    private Set<PlantsSynonym> synonyms = new HashSet<>();// foreign key in database. One Plant = many Images
+    private Set<PlantsSynonym> synonyms = new HashSet<>();// foreign key in database. One Plant = many synonyms
+
+    @OneToMany(targetEntity=PlantsEvent.class, mappedBy = "plant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference//!!! important to prevent infinite loop with json references
+    private Set<PlantsEvent> events = new HashSet<>();// foreign key in database. One Plant = many events
 
     @Transient
     private double score;//by search
@@ -136,12 +140,24 @@ public class Plant {
         return images;
     }
 
+    public void setImages(Set<ImageFileWithMetadata> images) {
+        this.images = images;
+    }
+
     public Set<PlantsSynonym> getSynonyms() {
         return synonyms;
     }
 
     public void setSynonyms(Set<PlantsSynonym> synonyms) {
         this.synonyms = synonyms;
+    }
+
+    public Set<PlantsEvent> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<PlantsEvent> events) {
+        this.events = events;
     }
 
     /**

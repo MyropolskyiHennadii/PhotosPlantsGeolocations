@@ -7,10 +7,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import photos.model.Geoposition;
-import photos.model.ImageFileWithMetadata;
-import photos.model.Plant;
-import photos.model.PlantsSynonym;
+import photos.model.*;
 
 import javax.persistence.*;
 import java.io.IOException;
@@ -25,6 +22,7 @@ public class DataBaseOperations {
     private EntityManagerFactory emfPlant = Persistence.createEntityManagerFactory("plants");
     private EntityManagerFactory emfImage = Persistence.createEntityManagerFactory("pictures");
     private EntityManagerFactory emfSynonym = Persistence.createEntityManagerFactory("plants_synonyms");
+    private EntityManagerFactory emfEvent = Persistence.createEntityManagerFactory("plants_events");
 
     private DataBaseOperations() {
     }
@@ -282,21 +280,18 @@ public class DataBaseOperations {
                     if (strSynonym != null) {
                         PlantsSynonym plantsSynonym = new PlantsSynonym(p, lang, strSynonym, href_lang);
                         PlantsSynonym existingSynonym = findPlantsSynonymByLang(p, lang);
+                        em.getTransaction().begin();
                         if (existingSynonym == null) {
                             //add record
                             logger.info("Creating synonyms {}", plantsSynonym);
-                            em.getTransaction().begin();
                             em.persist(plantsSynonym);
-                            em.getTransaction().commit();
                         } else {
                             //update record
-                            logger.info("Updating synonyms {}", existingSynonym);
-                            em.getTransaction().begin();
                             existingSynonym.setWeb_reference_wiki(href_lang);
                             existingSynonym.setLang_name(strSynonym);
-                            em.persist(existingSynonym);
-                            em.getTransaction().commit();
+                            em.merge(existingSynonym);
                         }
+                        em.getTransaction().commit();
                     }
                 }
             } catch (IOException e) {
@@ -307,10 +302,11 @@ public class DataBaseOperations {
 
     /**
      * find geoposition by id
+     *
      * @param id
      * @return
      */
-    public Geoposition findGeopositionByID(int id){
+    public Geoposition findGeopositionByID(int id) {
         EntityManager em = emfGeoposition.createEntityManager();
         TypedQuery<Geoposition> query = em.createQuery(
                 "SELECT e FROM Geoposition e WHERE e.id = '"
@@ -331,7 +327,7 @@ public class DataBaseOperations {
             logger.info("Updating geoposition {}", geoposition);
             em.getTransaction().begin();
             oldPosition.setPlant(plant);
-            em.persist(oldPosition);
+            em.merge(oldPosition);
             em.getTransaction().commit();
         } else {
             logger.info("Can't update geoposition {}", geoposition);
@@ -349,9 +345,9 @@ public class DataBaseOperations {
         if (oldPosition != null) {
             logger.info("Updating geoposition {}", oldPosition);
             em.getTransaction().begin();
-            oldPosition.setLatitude(oldPosition.getLatitude() + 0.000025 * shiftLatitude/1.77);
-            oldPosition.setLongitude(oldPosition.getLongitude() + 0.000025 * shiftLongitude/1.77);
-            em.persist(oldPosition);
+            oldPosition.setLatitude(oldPosition.getLatitude() + 0.000025 * shiftLatitude / 1.77);
+            oldPosition.setLongitude(oldPosition.getLongitude() + 0.000025 * shiftLongitude / 1.77);
+            em.merge(oldPosition);
             em.getTransaction().commit();
         } else {
             logger.info("Can't update geoposition {}", oldPosition);
@@ -360,9 +356,10 @@ public class DataBaseOperations {
 
     /**
      * all pictures
+     *
      * @return
      */
-    public List<ImageFileWithMetadata> findAllImages(){
+    public List<ImageFileWithMetadata> findAllImages() {
         EntityManager em = emfImage.createEntityManager();
         TypedQuery<ImageFileWithMetadata> query = em.createQuery(
                 "SELECT e FROM ImageFileWithMetadata e", ImageFileWithMetadata.class);
@@ -370,16 +367,53 @@ public class DataBaseOperations {
     }
 
     /**
-     * corricting record in pictures by id
-     * @param id
-     * @param newPath
+     * find event for plant and event
+     * @param p
+     * @param event
+     * @return
      */
-    public void correctImageFileWithPath(int id, String newPath){
-        EntityManager em = emfImage.createEntityManager();
-        ImageFileWithMetadata imFile = em.find(ImageFileWithMetadata.class, id);
+    public List<PlantsEvent> findEventForPlant(Plant p, String event) {
+        EntityManager em = emfEvent.createEntityManager();
+        TypedQuery<PlantsEvent> query = em.createQuery(
+                "SELECT e FROM PlantsEvent e WHERE e.plant.id_gbif = '"
+                        + p.getId_gbif() + "' AND e.event = '" + event + "'", PlantsEvent.class);
+        return query.getResultList();
+    }
+
+    /**
+     * write to database new event or update old event
+     *
+     * @param p
+     * @param event
+     * @param date_from
+     * @param date_to
+     * @param month_from
+     * @param month_to
+     */
+    public void wtitePlantsEvent(Plant p, String event, int date_from, int month_from, int date_to, int month_to) {
+
+        EntityManager em = emfEvent.createEntityManager();
+        PlantsEvent plantsEvent = new PlantsEvent(event, date_from, month_from, date_to, month_to, p);
+        PlantsEvent existingEvent = null;
+        List<PlantsEvent> listEvent = findEventForPlant(p, event);
+        if(listEvent.size() > 0 ){
+            existingEvent = listEvent.get(0);
+        }
         em.getTransaction().begin();
-        imFile.setPath_to_picture(newPath);
-        em.persist(imFile);
+        if (existingEvent == null) {
+            //add record
+            logger.info("Creating event {}", plantsEvent);
+            em.persist(plantsEvent);
+        } else {
+            //update record
+            logger.info("Updating event {}", plantsEvent);
+            existingEvent.setDate_from(date_from);
+            existingEvent.setMonth_from(month_from);
+            existingEvent.setDate_to(date_to);
+            existingEvent.setMonth_to(month_to);
+            em.merge(existingEvent);
+        }
         em.getTransaction().commit();
     }
+
 }
