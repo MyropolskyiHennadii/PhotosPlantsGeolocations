@@ -1,4 +1,4 @@
-# SortPhotosRecognizePlantsPutToMyMSQ
+# SortPhotosRecognizePlantsPutToMySQL
 
 That's JavaFX application, which tasks are:
 

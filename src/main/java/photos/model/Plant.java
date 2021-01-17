@@ -32,6 +32,8 @@ public class Plant {
     private String web_reference_wiki;//
     @Column
     private String kind = "Tree";
+    @Column
+    private int show_only_flowering = 0;//if Yes == 1
 
     @OneToMany(targetEntity=ImageFileWithMetadata.class, mappedBy = "plant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference//!!! important to prevent infinite loop with json references
@@ -134,6 +136,14 @@ public class Plant {
 
     public void setKind(String kind) {
         this.kind = kind;
+    }
+
+    public int getShow_only_flowering() {
+        return show_only_flowering;
+    }
+
+    public void setShow_only_flowering(int show_only_flowering) {
+        this.show_only_flowering = show_only_flowering;
     }
 
     public Set<ImageFileWithMetadata> getImages() {

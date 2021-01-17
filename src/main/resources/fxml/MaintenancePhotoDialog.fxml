@@ -113,13 +113,14 @@
                                         <Font name="System Italic" size="12.0" />
                                     </font>
                                 </Label>
-                                <Label id="labelImageGeo_tab3" fx:id="labelImageGeo_tab3" layoutX="13.0" layoutY="251.0" prefHeight="17.0" prefWidth="203.0" textFill="#2519b2" />
-                                <Hyperlink id="hyperlinkWiki_tab3" fx:id="hyperlinkWiki_tab3" layoutX="10.0" layoutY="278.0" onAction="#handleHyperLinkWiki_tab3" prefHeight="24.0" prefWidth="208.0" />
+                                <Label id="labelImageGeo_tab3" fx:id="labelImageGeo_tab3" layoutX="13.0" layoutY="237.0" prefHeight="17.0" prefWidth="203.0" textFill="#2519b2" />
+                                <Hyperlink id="hyperlinkWiki_tab3" fx:id="hyperlinkWiki_tab3" layoutX="10.0" layoutY="254.0" onAction="#handleHyperLinkWiki_tab3" prefHeight="24.0" prefWidth="208.0" />
                                 <WebView id="webView_tab3" fx:id="webView_tab3" layoutX="234.0" layoutY="29.0" prefHeight="352.0" prefWidth="339.0" />
                                 <CheckBox id="checkBoxShowMap_tab3" fx:id="checkBoxShowMap_tab3" layoutX="389.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleCheckBoxShowMap_tab3" text="Schow the map" />
                                 <Button id="buttonRecordToDB_tab3" fx:id="buttonRecordToDB_tab3" layoutX="13.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleButtonRecordToDB_tab3" text="Record to database" />
                                 <ComboBox id="comboBoxKindOfPlant_tab3" fx:id="comboBoxKindOfPlant_tab3" layoutX="68.0" layoutY="305.0" prefWidth="150.0" />
                                 <Label layoutX="14.0" layoutY="309.0" text="Kind" />
+                        <CheckBox id="checkBoxShowOnlyFlowering_tab3" fx:id="checkBoxShowOnlyFlowering_tab3" layoutX="14.0" layoutY="278.0" mnemonicParsing="false" text="Show only flowering" />
                             </children>
                         </AnchorPane>
                     </content>

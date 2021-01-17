@@ -77,6 +77,9 @@ public class ManageIncomingPhotosController {
     public WebView webView_tab3;
     public Button buttonRecordToDB_tab3;
     public ComboBox comboBoxKindOfPlant_tab3;
+    public CheckBox checkBoxShowOnlyFlowering_tab3;
+
+
     private Plant currentPlant;
     private DataBaseOperations dataBaseOperations = DataBaseOperations.getInstance();
 
@@ -180,7 +183,7 @@ public class ManageIncomingPhotosController {
         switch (operation) {
             case "input":
                 directoryChooser.setTitle("Choose Input Directory");
-                if(!inputDirectory_tab1.getText().isEmpty()){
+                if (!inputDirectory_tab1.getText().isEmpty()) {
                     File defaultDirectory = new File(inputDirectory_tab1.getText());
                     directoryChooser.setInitialDirectory(defaultDirectory);
                 }
@@ -192,7 +195,7 @@ public class ManageIncomingPhotosController {
                 break;
             case "output":
                 directoryChooser.setTitle("Choose Output Directory");
-                if(!outputDirectory_tab1.getText().isEmpty()){
+                if (!outputDirectory_tab1.getText().isEmpty()) {
                     File defaultDirectory = new File(outputDirectory_tab1.getText());
                     directoryChooser.setInitialDirectory(defaultDirectory);
                 }
@@ -205,7 +208,7 @@ public class ManageIncomingPhotosController {
                 break;
             case "photos":
                 directoryChooser.setTitle("Choose Photo's Directory");
-                if(!photosDirectory_tab2.getText().isEmpty()){
+                if (!photosDirectory_tab2.getText().isEmpty()) {
                     File defaultDirectory = new File(photosDirectory_tab2.getText());
                     directoryChooser.setInitialDirectory(defaultDirectory);
                 }
@@ -545,6 +548,8 @@ public class ManageIncomingPhotosController {
 
                 //kind of plant
                 currentPlant.setKind(comboBoxKindOfPlant_tab3.getValue().toString());
+                //show only flowering:
+                currentPlant.setShow_only_flowering(checkBoxShowOnlyFlowering_tab3.isSelected()? 1: 0);
 
                 //writing to database and refresh controller's fields
                 if (!saveOnlyPlant) {//all records
