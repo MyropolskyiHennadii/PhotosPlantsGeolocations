@@ -14,6 +14,11 @@ public class Geoposition {
     private double longitude;
     @Column
     private double latitude;
+    @Column
+    private int updated = 1;//1 = was updated, 0 = wasn't
+    @Column
+    private int deleted;//1 = was marked as deleted, 0 = wasn't
+
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_gbif")
     private Plant plant;//foreign key in database
@@ -22,11 +27,23 @@ public class Geoposition {
         this.longitude = longitude;
         this.latitude = latitude;
         this.plant = plant;
+        this.updated = 1;
+        this.deleted = 0;
     }
 
     public Geoposition() {
         longitude = - 9999999999999.99;
         latitude = - 9999999999999.99;
+        this.updated = 1;
+        this.deleted = 0;
+    }
+
+    public Geoposition(double longitude, double latitude, int updated, int deleted, Plant plant) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.updated = updated;
+        this.deleted = deleted;
+        this.plant = plant;
     }
 
     public double getLongitude() {
@@ -55,6 +72,22 @@ public class Geoposition {
 
     public long getId() {
         return id;
+    }
+
+    public int getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(int updated) {
+        this.updated = updated;
+    }
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
     }
 
     @Override

@@ -34,6 +34,10 @@ public class Plant {
     private String kind = "Tree";
     @Column
     private int show_only_flowering = 0;//if Yes == 1
+    @Column
+    private int updated;//1 = was updated, 0 = wasn't
+    @Column
+    private int deleted;//1 = was marked as deleted, 0 = wasn't
 
     @OneToMany(targetEntity=ImageFileWithMetadata.class, mappedBy = "plant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference//!!! important to prevent infinite loop with json references
@@ -168,6 +172,22 @@ public class Plant {
 
     public void setEvents(Set<PlantsEvent> events) {
         this.events = events;
+    }
+
+    public int getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(int updated) {
+        this.updated = updated;
+    }
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
     }
 
     /**

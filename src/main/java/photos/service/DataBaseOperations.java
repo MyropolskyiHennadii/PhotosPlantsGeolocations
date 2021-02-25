@@ -114,6 +114,7 @@ public class DataBaseOperations {
         }
 
         Geoposition geoposition = new Geoposition(longitude, latitude, plant);
+        geoposition.setUpdated(1);
         EntityManager em = emfGeoposition.createEntityManager();
 
         //if there are geoposition for this plant and with same coordinates = no save
@@ -279,6 +280,7 @@ public class DataBaseOperations {
                     String strSynonym = getPlantsNameFromNativeWiki(Jsoup.connect(href_lang).get());
                     if (strSynonym != null) {
                         PlantsSynonym plantsSynonym = new PlantsSynonym(p, lang, strSynonym, href_lang);
+                        plantsSynonym.setUpdated(1);
                         PlantsSynonym existingSynonym = findPlantsSynonymByLang(p, lang);
                         em.getTransaction().begin();
                         if (existingSynonym == null) {
@@ -394,6 +396,7 @@ public class DataBaseOperations {
 
         EntityManager em = emfEvent.createEntityManager();
         PlantsEvent plantsEvent = new PlantsEvent(event, date_from, month_from, date_to, month_to, p);
+        plantsEvent.setUpdated(1);
         PlantsEvent existingEvent = null;
         List<PlantsEvent> listEvent = findEventForPlant(p, event);
         if(listEvent.size() > 0 ){

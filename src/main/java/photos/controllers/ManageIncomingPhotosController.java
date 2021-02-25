@@ -550,7 +550,7 @@ public class ManageIncomingPhotosController {
                 currentPlant.setKind(comboBoxKindOfPlant_tab3.getValue().toString());
                 //show only flowering:
                 currentPlant.setShow_only_flowering(checkBoxShowOnlyFlowering_tab3.isSelected()? 1: 0);
-
+                currentPlant.setUpdated(1);
                 //writing to database and refresh controller's fields
                 if (!saveOnlyPlant) {//all records
                     dataBaseOperations.createAllRecordsToDataBase(currentPlant, imFile);

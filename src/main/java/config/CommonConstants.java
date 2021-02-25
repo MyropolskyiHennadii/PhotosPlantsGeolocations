@@ -21,7 +21,7 @@ public class CommonConstants {
     private String inputDirectory = "";
     private String outputDirectory = "";
     //path to photos in react project public dir:
-    private String preparedPhotosDirectory = "";
+    private String preparedPhotosDirectory = "D:\\Intellij Projects\\WestParkPlants\\js_westpark_frontend\\public\\PreparedPhotosForPlantsDB";
     //api PlantNet:
     private String apiKeyPlantNet = "";
     //used synonyms in languages (except english):

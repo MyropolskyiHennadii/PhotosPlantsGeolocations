@@ -27,6 +27,10 @@ public class PlantsEvent {
     private int date_to;
     @Column
     private int month_to;
+    @Column
+    private int updated;//1 = was updated, 0 = wasn't
+    @Column
+    private int deleted;//1 = was marked as deleted, 0 = wasn't
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_gbif")
@@ -91,6 +95,22 @@ public class PlantsEvent {
 
     public void setPlant(Plant plant) {
         this.plant = plant;
+    }
+
+    public int getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(int updated) {
+        this.updated = updated;
+    }
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
     }
 
     @Override
