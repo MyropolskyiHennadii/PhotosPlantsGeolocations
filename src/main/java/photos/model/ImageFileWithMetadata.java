@@ -42,6 +42,12 @@ public class ImageFileWithMetadata {
     @JsonBackReference//important to prevent infinite loop of references
     private Plant plant;//foreign key in database
 
+/*
+    @Column
+    private int updated;//1 = was updated, 0 = wasn't
+    @Column
+    private int deleted;//1 = was marked as deleted, 0 = wasn't*/
+
     @Transient
     private Metadata metadata;
     @Transient
@@ -51,12 +57,16 @@ public class ImageFileWithMetadata {
 
     public ImageFileWithMetadata(File file) throws ImageProcessingException {
         this.file = file;
+/*        this.updated = 0;
+        this.deleted = 0;*/
         setAllTagesWeNeed();
     }
 
     public ImageFileWithMetadata() {
         this.latitude = -999999.99999;
         this.longitude = -999999.99999;
+/*        this.updated = 0;
+        this.deleted = 0;*/
     }
 
     public Plant getPlant() {
@@ -130,6 +140,22 @@ public class ImageFileWithMetadata {
     public void setPath_to_picture(String path_to_picture) {
         this.path_to_picture = path_to_picture;
     }
+
+/*    public int getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(int updated) {
+        this.updated = updated;
+    }
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
+    }*/
 
     /**
      * setting fields by file-metadata

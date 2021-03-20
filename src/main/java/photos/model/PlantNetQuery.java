@@ -171,6 +171,7 @@ public class PlantNetQuery {
                         try {
                             jsonGbif = (JSONObject) jsonElement.get("gbif");
                             id = (String) jsonGbif.get("id");
+
                         } catch (NullPointerException e) {
                             logger.error("Undefined plant-id gbif for jsonResult {}", jsonElement);
                             continue;

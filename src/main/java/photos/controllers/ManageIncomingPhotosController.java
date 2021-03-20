@@ -553,6 +553,7 @@ public class ManageIncomingPhotosController {
                 currentPlant.setUpdated(1);
                 //writing to database and refresh controller's fields
                 if (!saveOnlyPlant) {//all records
+                    //imFile.setUpdated(1);
                     dataBaseOperations.createAllRecordsToDataBase(currentPlant, imFile);
                 } else {//only plant
                     dataBaseOperations.createPlant(currentPlant);
