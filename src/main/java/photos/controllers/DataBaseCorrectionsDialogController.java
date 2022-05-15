@@ -420,11 +420,13 @@ public class DataBaseCorrectionsDialogController {
         ImageFileWithMetadata imageFile = null;
         if (listPhotosSample.size() > 0) {
             imageFile = listPhotosSample.get(currentIndPhotoInListSample);
-            if (imageFile.getLongitude() > 0 && imageFile.getLatitude() > 0) {
-                url = "https://www.openstreetmap.org/?mlat=" +
-                        (imageFile.getLatitude() + shiftLatitude) + "&amp;mlon=" +
-                        (imageFile.getLongitude() + shiftLongitude) +
-                        "#map=17/" + (imageFile.getLatitude() + shiftLatitude) + "/" + (imageFile.getLongitude() + shiftLongitude);
+            if ((imageFile.getLongitude() != null) && (imageFile.getLatitude() != null)) {
+                if (imageFile.getLongitude() > 0 && imageFile.getLatitude() > 0) {
+                    url = "https://www.openstreetmap.org/?mlat=" +
+                            (imageFile.getLatitude() + shiftLatitude) + "&amp;mlon=" +
+                            (imageFile.getLongitude() + shiftLongitude) +
+                            "#map=17/" + (imageFile.getLatitude() + shiftLatitude) + "/" + (imageFile.getLongitude() + shiftLongitude);
+                }
             }
         }
         if (imageFile != null) {
